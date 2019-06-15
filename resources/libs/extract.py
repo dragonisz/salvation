@@ -17,7 +17,7 @@
 #  http://www.gnu.org/copyleft/gpl.html                                        #
 ################################################################################
 
-import xbmcaddon, xbmc, uservar, sys, os, time
+import zipfile, xbmcaddon, xbmc, uservar, sys, os, time , io
 import wizard as wiz
 
 ADDON_ID       = uservar.ADDON_ID
@@ -51,17 +51,19 @@ def all(_in, _out, dp=None, ignore=None, title=None):
 
 def allNoProgress(_in, _out, ignore):
 	try:
-		zin = zipfile.ZipFile(_in, 'r')
+		content_file = io.FileIO(_in,'r')
+		zin = zipfile.ZipFile(content_file,'r')
 		zin.extractall(_out)
 	except Exception, e:
-		wiz.log(str(e))
+		print str(e)
 		return False
 	return True
 
 def allWithProgress(_in, _out, dp, ignore, title):
 	count = 0; errors = 0; error = ''; update = 0; size = 0; excludes = []
 	try:
-		zin = zipfile.ZipFile(_in,  'r')
+		content_file = io.FileIO(_in,'r')
+		zin = zipfile.ZipFile(content_file,'r')
 	except Exception, e:
 		errors += 1; error += '%s\n' % e
 		wiz.log('Error Checking Zip: %s' % str(e), xbmc.LOGERROR)
